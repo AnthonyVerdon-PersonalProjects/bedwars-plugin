@@ -2,3 +2,7 @@ name: bedwarsPlugin
 version: 1.0
 author: Nordev
 main: fr.nordev.bedwars.Main
+commands:
+  respawn:
+    description: allow player to respawn(change his gamemode to survival and teleport to his spawn)
+    permission: respawn.use
