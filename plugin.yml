@@ -6,3 +6,6 @@ commands:
   respawn:
     description: allow player to respawn(change his gamemode to survival and teleport to his spawn)
     permission: respawn.use
+  changeWorld:
+    description: allow player to change his world location, between lobby and game
+    permission: changeWorld.use

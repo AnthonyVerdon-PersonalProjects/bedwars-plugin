@@ -22,8 +22,10 @@ public class MyListener implements Listener {
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		System.out.println("a player connected");
-		main.addPlayer(event.getPlayer());
+		Player player = event.getPlayer();
+		System.out.println(player + " connected");
+		main.addPlayer(player);
+		main.updateWorld(player, "lobby");
 	}
 
 	@EventHandler
