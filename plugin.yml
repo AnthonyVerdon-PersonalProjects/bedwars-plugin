@@ -1,6 +1,7 @@
 name: bedwarsPlugin
 version: 1.0
 author: Nordev
+api-version: 1.13
 main: fr.nordev.bedwars.Main
 commands:
   respawn:
