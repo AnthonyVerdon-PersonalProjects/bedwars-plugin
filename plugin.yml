@@ -1,0 +1,4 @@
+name: bedwarsPlugin
+version: 1.0
+author: Nordev
+main: fr.nordev.bedwars.Main
