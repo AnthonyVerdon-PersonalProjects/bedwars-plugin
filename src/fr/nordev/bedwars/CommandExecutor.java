@@ -38,7 +38,7 @@ public class CommandExecutor implements org.bukkit.command.CommandExecutor {
 			player.sendMessage("command: /changeWorld <world name>");
 			return false;
 		}
-		else if (args[0].compareTo("lobby") != 0 && args[0].compareTo("game") != 0)
+		else if (args[0].compareTo("lobby") != 0 && args[0].compareTo("game") != 0 && args[0].compareTo("test") != 0)
 		{
 			player.sendMessage("worlds availables: game; lobby");
 			return false;

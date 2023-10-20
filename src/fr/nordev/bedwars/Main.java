@@ -34,6 +34,8 @@ public class Main extends JavaPlugin {
 	{
 		WorldCreator wc = new WorldCreator(worldname);
 		wc.environment(env);
+		if (worldname.compareTo("game") == 0)
+			wc.generatorSettings("{\"layers\": []}");
 		wc.type(type);
 		wc.createWorld();
 	}
