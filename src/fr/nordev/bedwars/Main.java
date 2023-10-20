@@ -48,7 +48,7 @@ public class Main extends JavaPlugin {
 		player.setGameMode(GameMode.SURVIVAL);
 		player.setHealth(20.0);
 		player.setAbsorptionAmount(100);
-		player.setFoodLevel(100);;
+		player.setFoodLevel(100);
 		player.teleport(player.getWorld().getSpawnLocation());
 	}
 	
