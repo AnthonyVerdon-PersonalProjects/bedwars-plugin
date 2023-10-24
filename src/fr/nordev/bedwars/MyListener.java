@@ -8,6 +8,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -35,7 +37,6 @@ public class MyListener implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		System.out.println(player + " connected");
-		main.addPlayer(player);
 		main.updateWorld(player, "lobby");
 	}
 
@@ -47,14 +48,19 @@ public class MyListener implements Listener {
 		Player player = (Player)event.getEntity();
 		if (player.getHealth() <= event.getFinalDamage())
 		{
-			event.setCancelled(true);
+			//event.setCancelled(true);
 			player.setGameMode(GameMode.SPECTATOR);
-			player.sendTitle(ChatColor.RED + "You die !", ChatColor.RED + "wait for respawn ...", 10, 70, 20);
-			new BukkitRunnable(){
-	            public void run(){
-	                main.respawnPlayer(player);
-	            }
-	        }.runTaskLater(main, 20L * 5); //1L = 1 tick, 20L = 1 sec
+			if (player.getBedSpawnLocation() == null)
+				player.sendTitle(ChatColor.RED + "You lost !", "", 10, 70, 20);
+			else
+			{
+				player.sendTitle(ChatColor.RED + "You die !", ChatColor.RED + "wait for respawn ...", 10, 70, 20);
+				new BukkitRunnable(){
+		            public void run(){
+		                main.respawnPlayer(player);
+		            }
+		        }.runTaskLater(main, 20L * 5); //1L = 1 tick, 20L = 1 sec
+			}
 			System.out.println(player.getDisplayName() + " died");
 		}
 	}
@@ -85,11 +91,12 @@ public class MyListener implements Listener {
         ItemMeta meta = item.getItemMeta();
         if (!meta.hasDisplayName() || meta.getDisplayName().compareTo("start game") != 0)
         	return ;
-        main.updateWorld((Player)event.getWhoClicked(), "game");
+        Game newGame = new Game(main.getGameBlueprint());
+        main.updateWorld((Player)event.getWhoClicked(), newGame.getName());
     }
 	
 	@EventHandler
-    public void onChangeWorld (PlayerChangedWorldEvent event) {
+    public void onChangeWorld(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
         World world = player.getLocation().getWorld();
         player.getInventory().clear();
@@ -108,5 +115,23 @@ public class MyListener implements Listener {
     	customMeta.setDisplayName(name);
     	customItem.setItemMeta(customMeta);
     	return (customItem);
+	}
+	
+	@EventHandler
+	public void onBedEnter(PlayerBedEnterEvent event) {
+		event.setCancelled(true);
+	}
+	
+	@EventHandler
+	public void onBlockDestroyed(BlockBreakEvent event) {
+		return ;
+		/*
+		 * need to associate a bed to a team, and if a bed is destroyed, send a message to player from this team to inform them
+		 */
+		/*
+		Player player = event.getPlayer();
+		if (event.getBlock().getType() == Material.RED_BED)
+			player.sendTitle(ChatColor.RED + "bed destroyed !", ChatColor.RED + "this is your last chance !", 10, 70, 20);
+		*/
 	}
 }
