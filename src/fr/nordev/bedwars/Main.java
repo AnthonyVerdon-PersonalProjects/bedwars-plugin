@@ -1,6 +1,7 @@
 package fr.nordev.bedwars;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.Bukkit;
@@ -12,17 +13,25 @@ import org.bukkit.block.Block;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class Main extends JavaPlugin {
 
+	private ArrayList<Game> games;
+	
 	@Override
 	public void onEnable() {
 		System.out.println("plugin started");
 		getServer().getPluginManager().registerEvents(new MyListener(this), this);
-		getCommand("respawn").setExecutor(new CommandExecutor(this));
-		getCommand("changeWorld").setExecutor(new CommandExecutor(this));
+		CommandExecutor commands = new CommandExecutor(this);
+		getCommand("respawn").setExecutor(commands);
+		getCommand("lobby").setExecutor(commands);
+		getCommand("gameBlueprint").setExecutor(commands);
+		getCommand("start").setExecutor(commands);
 		createWorld("lobby", World.Environment.NORMAL, WorldType.FLAT);
 		createWorld("gameBlueprint", World.Environment.NORMAL, WorldType.FLAT);
+		games = new ArrayList<Game>();
 	}
 
 	@Override
@@ -75,5 +84,40 @@ public class Main extends JavaPlugin {
 	
 	public World getGameBlueprint() {
 		return (getServer().getWorld("gameBlueprint"));
+	}
+	
+	public void addGame(Game game)
+	{
+		games.add(game);
+	}
+	
+	public Game getGame(Player player)
+	{
+		int gameArraySize = games.size();
+		for (int i = 0; i < gameArraySize; i++)
+		{
+			ArrayList<Player> players = games.get(i).getPlayers();
+			int playerArraySize = players.size();
+			for (int j = 0; j < playerArraySize; j++)
+			{
+				if (players.get(j) == player)
+					return (games.get(i));
+			}
+		}
+		return (null);
+	}
+	
+	public ArrayList<Game> getGames()
+	{
+		return (games);
+	}
+	
+	public ItemStack createCustomItem(Material materialname, String name)
+	{
+		ItemStack customItem = new ItemStack(materialname, 1);
+    	ItemMeta customMeta = customItem.getItemMeta();
+    	customMeta.setDisplayName(name);
+    	customItem.setItemMeta(customMeta);
+    	return (customItem);
 	}
 }

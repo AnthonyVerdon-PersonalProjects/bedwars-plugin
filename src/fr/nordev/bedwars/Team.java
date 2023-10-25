@@ -3,23 +3,19 @@ package fr.nordev.bedwars;
 import java.util.ArrayList;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class Team {
 
-	private Material bed;
+	private String name;
 	private Location spawn;
 	private ArrayList<Player> players;
 	
+	public Team()
+	{
+		players = new ArrayList<Player>();
+	}
 	
-	public Material getBed() {
-		return bed;
-	}
-	public void setBed(Material bed) {
-		this.bed = bed;
-	}
-
 	public Location getSpawn() {
 		return spawn;
 	}
@@ -35,5 +31,17 @@ public class Team {
 	}
 	public void addPlayer(Player player) {
 		players.add(player);
+	}
+
+	public void removePlayer(Player player) {
+		players.remove(player);
+	}
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }

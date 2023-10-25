@@ -19,8 +19,12 @@ public class CommandExecutor implements org.bukkit.command.CommandExecutor {
 			Player player = (Player)sender;
 			if (cmd.getName().compareTo("respawn") == 0)
 				return (respawnCommand(player));
-			else if (cmd.getName().compareTo("changeWorld") == 0)
-				return (changeWorldCommand(player, args));
+			else if (cmd.getName().compareTo("lobby") == 0)
+				return (lobbyCommand(player));
+			else if (cmd.getName().compareTo("gameBlueprint") == 0)
+				return (gameBlueprintCommand(player));
+			else if (cmd.getName().compareTo("start") == 0)
+				return (startCommand(player));
 		}
 		return false;
 	}
@@ -31,19 +35,27 @@ public class CommandExecutor implements org.bukkit.command.CommandExecutor {
 		return true;
 	}
 	
-	private boolean changeWorldCommand(Player player, String[] args)
+	private boolean lobbyCommand(Player player)
 	{
-		if (args.length != 1)
+		main.updateWorld(player, "lobby");
+		return true;
+	}
+	
+	private boolean gameBlueprintCommand(Player player)
+	{
+		main.updateWorld(player, "gameBlueprint");
+		return true;
+	}
+	
+	private boolean startCommand(Player player)
+	{
+		Game game = main.getGame(player);
+		if (game == null)
 		{
-			player.sendMessage("command: /changeWorld <world name>");
-			return false;
+			player.sendMessage("you need to be in a game lobby to execute this command");
+			return (false);
 		}
-		else if (args[0].compareTo("lobby") != 0 && args[0].compareTo("gameBlueprint") != 0)
-		{
-			player.sendMessage("worlds availables: gameBlueprint; lobby");
-			return false;
-		}
-		main.updateWorld(player, args[0]);
+		game.start();
 		return true;
 	}
 }
