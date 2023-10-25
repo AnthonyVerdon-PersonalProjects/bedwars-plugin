@@ -21,7 +21,7 @@ public class Game {
 		name = "game_" + nbGames;
 		WorldCreator worldCreator  = new WorldCreator(name);
 		worldCreator.copy(map);
-		worldCreator.createWorld();
+		world = worldCreator.createWorld();
 		nbGames++;
 	}
 	

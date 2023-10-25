@@ -16,7 +16,12 @@ public class GameLobby {
 	public void openChooseTeamBook(Main main, PlayerInteractEvent event)
 	{
         Player player = event.getPlayer();
-        Game game = main.getGame(player);
+        updateTeamBook(main, player);
+	}
+	
+	private void updateTeamBook(Main main, Player player)
+	{
+		Game game = main.getGame(player);
         Inventory inventoryMenu = Bukkit.createInventory(null, 27, "choose a team");
         int index = 0;
         for (Material material : Material.values())
@@ -57,6 +62,7 @@ public class GameLobby {
         {
         	game.resetPlayerTeam(player);
         	game.addPlayerToTeam(player, meta.getDisplayName());
+        	updateTeamBook(main, player);
         }
         //add player to the correct team (if player already in a team, erase it)
         //add a button to quit your team

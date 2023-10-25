@@ -29,6 +29,24 @@ public class ServerLobby {
 	
 	public void chooseGame(Main main, InventoryClickEvent event, ItemStack item)
 	{
+		if (item.getType() != Material.GREEN_WOOL || !item.hasItemMeta())
+        	return ;
+		ItemMeta meta = item.getItemMeta();
+        if (!meta.hasDisplayName() || !meta.getDisplayName().startsWith("game_"))
+        	return ;
+		ArrayList<Game> games = main.getGames();
+		Player player = (Player)event.getWhoClicked();
+		int gameArraySize = games.size();
+		Game game;
+        for (int i = 0; i < gameArraySize; i++)
+        {
+        	if (games.get(i).getName().compareTo(meta.getDisplayName()) == 0)
+        	{
+        		game = games.get(i);
+        		main.updateWorld(player, game.getWorld().getName());
+        		break;
+        	}
+        }
 		return ;
 	}
 	

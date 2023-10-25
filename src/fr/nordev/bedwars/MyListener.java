@@ -38,6 +38,9 @@ public class MyListener implements Listener {
 		Player player = event.getPlayer();
 		System.out.println(player + " connected");
 		main.updateWorld(player, "lobby");
+		player.getInventory().clear();
+		player.getInventory().setItem(4, main.createCustomItem(Material.BOOK, "Menu"));
+    	player.updateInventory();
 	}
 
 	@EventHandler
@@ -72,6 +75,8 @@ public class MyListener implements Listener {
 	@EventHandler
     public void onChangeWorld(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
+        Game game = main.getGame(player);
+        game.resetPlayerTeam(player);
         World world = player.getLocation().getWorld();
         player.getInventory().clear();
         System.out.println(player.getName() + " connected to world " + world.getName());
@@ -101,5 +106,11 @@ public class MyListener implements Listener {
 		if (event.getBlock().getType() == Material.RED_BED)
 			player.sendTitle(ChatColor.RED + "bed destroyed !", ChatColor.RED + "this is your last chance !", 10, 70, 20);
 		*/
+	}
+	
+	@EventHandler
+	public void onItemMove(InventoryClickEvent event)
+	{
+		event.setCancelled(true);
 	}
 }
