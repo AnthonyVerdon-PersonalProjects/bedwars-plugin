@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
@@ -31,6 +32,7 @@ public class Main extends JavaPlugin {
 		getCommand("lobby").setExecutor(commands);
 		getCommand("gameBlueprint").setExecutor(commands);
 		getCommand("start").setExecutor(commands);
+		getCommand("end").setExecutor(commands);
 		createWorld("lobby", World.Environment.NORMAL, WorldType.FLAT);
 		createWorld("gameBlueprint", World.Environment.NORMAL, WorldType.FLAT);
 		games = new ArrayList<Game>();
@@ -129,5 +131,14 @@ public class Main extends JavaPlugin {
 
 	public void setScoreboardManager(ScoreboardManager manager) {
 		this.manager = manager;
+	}
+	
+	public boolean samePosition(Location location, double[] coords)
+	{
+		if (location.getX() == coords[0]
+			&& location.getY() == coords[1]
+			&& location.getZ() == coords[2])
+			return (true);
+		return (false);
 	}
 }

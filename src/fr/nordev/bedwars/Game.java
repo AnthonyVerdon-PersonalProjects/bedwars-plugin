@@ -62,6 +62,33 @@ public class Game {
 		return (null);
 	}
 	
+	public Team getTeam(Player player)
+	{
+		int teamArraySize = teams.size();
+		for (int i = 0; i < teamArraySize; i++)
+		{
+			ArrayList<Player> players = teams.get(i).getPlayers();
+			int playerArraySize = players.size();
+			for (int j = 0; j < playerArraySize; j++)
+			{
+				if (players.get(j) == player)
+					return (teams.get(i));
+			}
+		}
+		return (null);
+	}
+	
+	public Team getTeam(Main main, double[] coords)
+	{
+		int teamArraySize = teams.size();
+		for (int i = 0; i < teamArraySize; i++)
+		{
+			if (main.samePosition(teams.get(i).getSpawn(), coords))
+				return (teams.get(i));
+		}
+		return (null);
+	}
+	
 	public World getWorld() {
 		return world;
 	}
@@ -113,11 +140,12 @@ public class Game {
 		}
 	}
 	
-	public void start(Scoreboard board)
+	public void start(Main main)
 	{
-		int teamArraySize = teams.size();
-		Objective obj = board.registerNewObjective("ServerName", Criteria.DUMMY, "Test Server");
+		Scoreboard board = main.getScoreboardManager().getNewScoreboard();
+		Objective obj = board.registerNewObjective("inGameScoreBoard", Criteria.DUMMY, "Bedwars");
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+        int teamArraySize = teams.size();
         for (int i = 0; i < teamArraySize; i++)
         {
         	String text = teams.get(i).getName() + ": ";
@@ -125,8 +153,8 @@ public class Game {
         		text += "§4BED";
         	else
         		text += "§2BED";
-        	Score score = obj.getScore(text);
-        	score.setScore(i);
+        	Score teamBed = obj.getScore(text);
+        	teamBed.setScore(i);
         }
 		for (int i = 0; i < teamArraySize; i++)
 		{
@@ -140,6 +168,39 @@ public class Game {
 				player.setInvulnerable(false);
 				player.setScoreboard(board);
 			}
+		}
+	}
+	
+	public void end(Main main)
+	{
+		int playerArraySize = players.size();
+		for (int i = 0; i < playerArraySize; i++)
+			main.updateWorld(players.get(i), "lobby");
+	}
+	
+	public void updateScoreboard(Main main)
+	{
+		Scoreboard board = main.getScoreboardManager().getNewScoreboard();
+		Objective obj = board.registerNewObjective("inGameScoreBoard", Criteria.DUMMY, "Bedwars");
+		obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+		int teamArraySize = teams.size();
+        for (int i = 0; i < teamArraySize; i++)
+        {
+        	String text = teams.get(i).getName() + ": ";
+        	System.out.println(teams.get(i).getSpawn());
+        	if (teams.get(i).getSpawn() == null)
+        		text += "§4BED";
+        	else
+        		text += "§2BED";
+        	Score teamBed = obj.getScore(text);
+        	teamBed.setScore(i);
+        }
+        for (int i = 0; i < teamArraySize; i++)
+		{
+			ArrayList<Player> players = teams.get(i).getPlayers();
+			int playerArraySize = players.size();
+			for (int j = 0; j < playerArraySize; j++)
+				players.get(j).setScoreboard(board);
 		}
 	}
 }

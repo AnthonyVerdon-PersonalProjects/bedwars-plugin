@@ -44,4 +44,11 @@ public class Team {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public void sendTitle(String title, String subtitle)
+	{
+		int playerArraySize = players.size();
+		for (int i = 0; i < playerArraySize; i++)
+			players.get(i).sendTitle(title, subtitle, 10, 70, 20);
+	}
 }

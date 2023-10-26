@@ -85,12 +85,9 @@ public class MyListener implements Listener {
         player.getInventory().clear();
         System.out.println(player.getName() + " connected to world " + world.getName());
         if (world.getName().compareTo("lobby") == 0) {
-        	System.out.println("give " + player.getName() + " a menu book");
-        	player.getInventory().setItem(4, main.createCustomItem(Material.BOOK, "Menu"));
-        	player.updateInventory();
+        	serverLobby.playerConnected(main, player);
         } else if (world.getName().startsWith("game_")) {
-        	player.getInventory().setItem(4, main.createCustomItem(Material.BOOK, "choose a team"));
-        	player.updateInventory();
+        	gameLobby.playerConnected(main, player);
         }
     }
 	
@@ -101,7 +98,7 @@ public class MyListener implements Listener {
 	
 	@EventHandler
 	public void onBlockDestroyed(BlockBreakEvent event) {
-		inGameLogic.onBlockDestroyed(event);
+		inGameLogic.onBlockDestroyed(main, event);
 	}
 	
 	@EventHandler

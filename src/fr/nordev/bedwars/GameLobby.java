@@ -10,8 +10,25 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scoreboard.Criteria;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Scoreboard;
 
 public class GameLobby {
+	
+	public void playerConnected(Main main, Player player)
+	{
+		player.getInventory().setItem(4, main.createCustomItem(Material.BOOK, "choose a team"));
+    	player.updateInventory();
+    	Scoreboard board = main.getScoreboardManager().getNewScoreboard();
+		Objective obj = board.registerNewObjective("inGameScoreBoard", Criteria.DUMMY, "Bedwars");
+        obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+        Score nbPlayers = obj.getScore("nb players: " + main.getGame(player).getPlayers().size());
+        nbPlayers.setScore(0);
+        player.setScoreboard(board);
+	}
 	
 	public void openChooseTeamBook(Main main, PlayerInteractEvent event)
 	{

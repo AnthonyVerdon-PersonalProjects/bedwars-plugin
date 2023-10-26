@@ -1,7 +1,9 @@
 package fr.nordev.bedwars;
 
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -18,7 +20,7 @@ public class InGameLogic {
 		Player player = (Player)event.getEntity();
 		if (player.getHealth() <= event.getFinalDamage())
 		{
-			//event.setCancelled(true);
+			event.setCancelled(true);
 			player.setGameMode(GameMode.SPECTATOR);
 			if (player.getBedSpawnLocation() == null)
 				player.sendTitle(ChatColor.RED + "You lost !", "", 10, 70, 20);
@@ -39,9 +41,21 @@ public class InGameLogic {
 		event.setCancelled(true);
 	}
 	
-	public void onBlockDestroyed(BlockBreakEvent event) {
+	public void onBlockDestroyed(Main main, BlockBreakEvent event) {
+		Block block = event.getBlock();
+		if (block.getType() != Material.RED_BED)
+			return ;
 		Player player = event.getPlayer();
-		if (event.getBlock().getType() == Material.RED_BED)
-			player.sendTitle(ChatColor.RED + "bed destroyed !", ChatColor.RED + "this is your last chance !", 10, 70, 20);
+		Game game = main.getGame(player);
+		if (game == null)
+			return ;
+		Location location = block.getLocation();
+		double[] coords = { location.getX(), location.getY(), location.getZ() };
+		Team team = game.getTeam(main, coords);
+		if (team ==  null)
+			return ;
+		team.sendTitle(ChatColor.RED + "bed destroyed !", ChatColor.RED + "this is your last chance !");
+		team.setSpawn(null);
+		game.updateScoreboard(main);
 	}
 }

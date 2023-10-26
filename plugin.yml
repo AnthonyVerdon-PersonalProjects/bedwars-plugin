@@ -16,3 +16,6 @@ commands:
   start:
     description: if the player is in a game, start the game
     permission: start.use
+  end:
+    description: if the player is in a game, end the game
+    permission: end.use
