@@ -5,6 +5,9 @@ import java.util.ArrayList;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.ScoreboardManager;
+
+import fr.nordev.bedwars.classes.Game;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -67,8 +70,9 @@ public class Main extends JavaPlugin {
 		World newWorld = wc.createWorld();
 		if (worldname.compareTo("gameBlueprint") == 0)
 		{
-			Block block = newWorld.getBlockAt(0, 0, 0);
+			Block block = newWorld.getBlockAt(0, -60, 0);
 			block.setType(Material.BEDROCK);
+			newWorld.setSpawnLocation(new Location(newWorld, 0.5, -59.0, 0.5));
 		}
 	}
 	

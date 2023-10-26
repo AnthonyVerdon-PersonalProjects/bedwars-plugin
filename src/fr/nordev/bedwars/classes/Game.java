@@ -1,17 +1,26 @@
-package fr.nordev.bedwars;
+package fr.nordev.bedwars.classes;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+import org.bukkit.WorldType;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
+
+import fr.nordev.bedwars.Main;
+import fr.nordev.bedwars.enums.bedLocation;
 
 public class Game {
 
@@ -22,13 +31,44 @@ public class Game {
 	private static int nbGames = 0;
 	
 	public Game(World map) {
-		players = new ArrayList<Player>();
 		name = "game_" + nbGames;
-		WorldCreator worldCreator  = new WorldCreator(name);
-		worldCreator.copy(map);
+		new File(name).mkdir();
+		copy(map.getWorldFolder(), name);
+		WorldCreator worldCreator = new WorldCreator(name);
 		world = worldCreator.createWorld();
+		players = new ArrayList<Player>();
 		initTeams();
 		nbGames++;
+	}
+	
+	private void copy(File folder, String name)
+	{
+		for (File file: folder.listFiles())
+		{
+			if (file.getName().compareTo("uid.dat") == 0)
+				continue ;
+			File newFile = new File(name + File.separator + file.getName());
+			if (file.isDirectory())
+			{
+				newFile.mkdir();
+				copy(file, name + File.separator + newFile.getName());
+				continue ;
+			}
+			try {
+				FileInputStream inputStream = new FileInputStream(file);
+				FileOutputStream outputStream = new FileOutputStream(newFile);
+				int len;
+				byte[] bytes = new byte[1024];
+				while ((len = inputStream.read(bytes)) > 0)
+					outputStream.write(bytes, 0, len);
+				inputStream.close();
+				outputStream.close();
+			}
+			catch (Exception ex)
+			{
+				ex.printStackTrace();
+			}
+		}
 	}
 	
 	private void initTeams()

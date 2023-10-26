@@ -1,4 +1,4 @@
-package fr.nordev.bedwars;
+package fr.nordev.bedwars.classes;
 
 import java.util.ArrayList;
 

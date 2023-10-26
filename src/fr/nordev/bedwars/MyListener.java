@@ -13,6 +13,12 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import fr.nordev.bedwars.classes.Game;
+import fr.nordev.bedwars.phases.GameLobby;
+import fr.nordev.bedwars.phases.InGameLogic;
+import fr.nordev.bedwars.phases.ServerLobby;
+
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;

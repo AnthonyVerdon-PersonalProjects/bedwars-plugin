@@ -1,4 +1,4 @@
-package fr.nordev.bedwars;
+package fr.nordev.bedwars.phases;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -10,6 +10,9 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import fr.nordev.bedwars.Main;
+import fr.nordev.bedwars.classes.Game;
+import fr.nordev.bedwars.classes.Team;
 import net.md_5.bungee.api.ChatColor;
 
 public class InGameLogic {

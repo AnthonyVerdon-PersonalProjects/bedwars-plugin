@@ -1,4 +1,4 @@
-package fr.nordev.bedwars;
+package fr.nordev.bedwars.phases;
 
 import java.util.ArrayList;
 
@@ -15,6 +15,9 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
+
+import fr.nordev.bedwars.Main;
+import fr.nordev.bedwars.classes.Game;
 
 public class ServerLobby {
 
