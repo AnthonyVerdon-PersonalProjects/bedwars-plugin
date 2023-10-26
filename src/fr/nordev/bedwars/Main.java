@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -19,6 +20,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class Main extends JavaPlugin {
 
 	private ArrayList<Game> games;
+	private ScoreboardManager manager;
 	
 	@Override
 	public void onEnable() {
@@ -32,11 +34,11 @@ public class Main extends JavaPlugin {
 		createWorld("lobby", World.Environment.NORMAL, WorldType.FLAT);
 		createWorld("gameBlueprint", World.Environment.NORMAL, WorldType.FLAT);
 		games = new ArrayList<Game>();
+		manager = Bukkit.getScoreboardManager();
 	}
-
+	
 	@Override
 	public void onDisable() {
-		//delete the game when it ended
 		int nbGames = Game.getNbGames();
 		for (int i = 0; i < nbGames; i++)
 		{
@@ -119,5 +121,13 @@ public class Main extends JavaPlugin {
     	customMeta.setDisplayName(name);
     	customItem.setItemMeta(customMeta);
     	return (customItem);
+	}
+
+	public ScoreboardManager getScoreboardManager() {
+		return manager;
+	}
+
+	public void setScoreboardManager(ScoreboardManager manager) {
+		this.manager = manager;
 	}
 }

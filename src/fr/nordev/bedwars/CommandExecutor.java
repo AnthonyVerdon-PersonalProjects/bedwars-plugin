@@ -3,6 +3,7 @@ package fr.nordev.bedwars;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Scoreboard;
 
 public class CommandExecutor implements org.bukkit.command.CommandExecutor {
 
@@ -55,7 +56,8 @@ public class CommandExecutor implements org.bukkit.command.CommandExecutor {
 			player.sendMessage("you need to be in a game lobby to execute this command");
 			return (false);
 		}
-		game.start();
+		Scoreboard board = main.getScoreboardManager().getNewScoreboard();
+		game.start(board);
 		return true;
 	}
 }

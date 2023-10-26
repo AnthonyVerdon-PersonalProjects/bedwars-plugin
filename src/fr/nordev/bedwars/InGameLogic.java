@@ -1,8 +1,11 @@
 package fr.nordev.bedwars;
 
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import net.md_5.bungee.api.ChatColor;
@@ -30,5 +33,15 @@ public class InGameLogic {
 			}
 			System.out.println(player.getDisplayName() + " died");
 		}
+	}
+
+	public void onBedEnter(PlayerBedEnterEvent event) {
+		event.setCancelled(true);
+	}
+	
+	public void onBlockDestroyed(BlockBreakEvent event) {
+		Player player = event.getPlayer();
+		if (event.getBlock().getType() == Material.RED_BED)
+			player.sendTitle(ChatColor.RED + "bed destroyed !", ChatColor.RED + "this is your last chance !", 10, 70, 20);
 	}
 }

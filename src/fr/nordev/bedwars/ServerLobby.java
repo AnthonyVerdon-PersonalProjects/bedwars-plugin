@@ -56,7 +56,9 @@ public class ServerLobby {
         Inventory inventoryMenu = Bukkit.createInventory(null, 27, "Menu");
         inventoryMenu.setItem(0, main.createCustomItem(Material.COMPASS, "start game"));
         ArrayList<Game> games = main.getGames();
-        int gameArraySize = games.size();
+        int gameArraySize = 0;
+        if (games != null)
+        	gameArraySize = games.size();
         for (int i = 0; i < gameArraySize; i++)
         {
         	if (i > 25)

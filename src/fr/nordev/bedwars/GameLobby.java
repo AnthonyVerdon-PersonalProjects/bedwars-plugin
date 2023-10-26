@@ -22,6 +22,8 @@ public class GameLobby {
 	private void updateTeamBook(Main main, Player player)
 	{
 		Game game = main.getGame(player);
+		if (game == null)
+			return ;
         Inventory inventoryMenu = Bukkit.createInventory(null, 27, "choose a team");
         int index = 0;
         for (Material material : Material.values())

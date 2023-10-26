@@ -13,7 +13,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -41,6 +40,7 @@ public class MyListener implements Listener {
 		player.getInventory().clear();
 		player.getInventory().setItem(4, main.createCustomItem(Material.BOOK, "Menu"));
     	player.updateInventory();
+    	player.setInvulnerable(true);
 	}
 
 	@EventHandler
@@ -67,16 +67,20 @@ public class MyListener implements Listener {
 		if (event.getClick() != ClickType.LEFT || event.getCurrentItem() == null)
             return ;
 		ItemStack item = event.getCurrentItem();
-        serverLobby.startGame(main, event, item);
-        serverLobby.chooseGame(main, event, item);
-        gameLobby.chooseTeam(main, event, item);
+		if (event.getWhoClicked().getWorld().getName().compareTo("lobby") == 0)
+		{
+			serverLobby.startGame(main, event, item);
+        	serverLobby.chooseGame(main, event, item);
+		} else
+			gameLobby.chooseTeam(main, event, item);
     }
 	
 	@EventHandler
     public void onChangeWorld(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
         Game game = main.getGame(player);
-        game.resetPlayerTeam(player);
+        if (game != null)
+        	game.resetPlayerTeam(player);
         World world = player.getLocation().getWorld();
         player.getInventory().clear();
         System.out.println(player.getName() + " connected to world " + world.getName());
@@ -92,25 +96,19 @@ public class MyListener implements Listener {
 	
 	@EventHandler
 	public void onBedEnter(PlayerBedEnterEvent event) {
-		event.setCancelled(true);
+		inGameLogic.onBedEnter(event);
 	}
 	
 	@EventHandler
 	public void onBlockDestroyed(BlockBreakEvent event) {
-		return ;
-		/*
-		 * need to associate a bed to a team, and if a bed is destroyed, send a message to player from this team to inform them
-		 */
-		/*
-		Player player = event.getPlayer();
-		if (event.getBlock().getType() == Material.RED_BED)
-			player.sendTitle(ChatColor.RED + "bed destroyed !", ChatColor.RED + "this is your last chance !", 10, 70, 20);
-		*/
+		inGameLogic.onBlockDestroyed(event);
 	}
 	
 	@EventHandler
 	public void onItemMove(InventoryClickEvent event)
 	{
-		event.setCancelled(true);
+		Player player = (Player)event.getWhoClicked();
+		if (player.getWorld().getName().compareTo("lobby") == 0)
+			event.setCancelled(true);
 	}
 }
