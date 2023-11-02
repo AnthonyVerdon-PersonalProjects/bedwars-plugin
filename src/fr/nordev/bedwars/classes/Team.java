@@ -45,6 +45,9 @@ public class Team {
 		this.name = name;
 	}
 	
+	/*
+	 * send a title message to players of the team
+	 */
 	public void sendTitle(String title, String subtitle)
 	{
 		int playerArraySize = players.size();

@@ -17,6 +17,11 @@ import net.md_5.bungee.api.ChatColor;
 
 public class InGameLogic {
 
+	/*
+	 * when a player should die
+	 * cancel the event and change his gamemode
+	 * and make him respawn 5 sec later
+	 */
 	public void onDamageApplied(Main main, EntityDamageEvent event) {
 		if (!(event.getEntity() instanceof Player))
 			return ;
@@ -40,10 +45,20 @@ public class InGameLogic {
 		}
 	}
 
+	/*
+	 * avoid player to sleep in a bed
+	 */
 	public void onBedEnter(PlayerBedEnterEvent event) {
 		event.setCancelled(true);
 	}
 	
+	/*
+	 * when a block is destroyed
+	 * check if it's a bed and if it's at a location specified in bedLocation enum
+	 * if yes, send to the team the title,
+	 * delete their spawn
+	 * update scoreboard
+	 */
 	public void onBlockDestroyed(Main main, BlockBreakEvent event) {
 		Block block = event.getBlock();
 		if (block.getType() != Material.RED_BED)

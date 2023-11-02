@@ -71,7 +71,7 @@ public class CommandExecutor implements org.bukkit.command.CommandExecutor {
 			player.sendMessage("you need to be in a game lobby to execute this command");
 			return (false);
 		}
-		game.end(main);
+		game.end(main, "none");
 		return true;
 	}
 }

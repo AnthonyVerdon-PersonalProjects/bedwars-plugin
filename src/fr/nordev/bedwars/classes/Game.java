@@ -13,6 +13,7 @@ import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -21,6 +22,7 @@ import org.bukkit.scoreboard.Scoreboard;
 
 import fr.nordev.bedwars.Main;
 import fr.nordev.bedwars.enums.bedLocation;
+import net.md_5.bungee.api.ChatColor;
 
 public class Game {
 
@@ -41,6 +43,10 @@ public class Game {
 		nbGames++;
 	}
 	
+	/*
+	 * create a copy of folder
+	 * to create a map copy where the game will be played
+	 */
 	private void copy(File folder, String name)
 	{
 		for (File file: folder.listFiles())
@@ -71,6 +77,9 @@ public class Game {
 		}
 	}
 	
+	/*
+	 * initialize all teams
+	 */
 	private void initTeams()
 	{
 		teams = new ArrayList<Team>();
@@ -85,12 +94,102 @@ public class Game {
         	teams.add(newTeam);
         }
 	}
+	
+	/*
+	 * start the game by preparing everyone (location, inventory, etc ...)
+	 */
+	public void start(Main main)
+	{
+		updateScoreboard(main);
+		int teamArraySize = teams.size();
+		for (int i = 0; i < teamArraySize; i++)
+		{
+			ArrayList<Player> players = teams.get(i).getPlayers();
+			int playerArraySize = players.size();
+			for (int j = 0; j < playerArraySize; j++)
+			{
+				Player player = players.get(j);
+				player.getInventory().clear();
+				player.teleport(teams.get(i).getSpawn());
+				player.setInvulnerable(false);
+			}
+		}
+	}
+	
+	/*
+	 * when a bed is destroyed
+	 * update the score board and check if the game will end
+	 */
+	public void updateScoreboard(Main main)
+	{
+		Scoreboard board = main.getScoreboardManager().getNewScoreboard();
+		Objective obj = board.registerNewObjective("inGameScoreBoard", Criteria.DUMMY, "Bedwars");
+		obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+		int nbBedNotDestroyed = 0;
+		Team team = null;
+		int teamArraySize = teams.size();
+        for (int i = 0; i < teamArraySize; i++)
+        {
+        	if (teams.get(i).getPlayers().size() == 0)
+        		continue;
+        	String text = teams.get(i).getName() + ": ";
+        	if (teams.get(i).getSpawn() == null)
+        		text += "§4BED";
+        	else
+        	{
+        		text += "§2BED";
+        		nbBedNotDestroyed++;
+        		team = teams.get(i);
+        	}
+        	Score teamBed = obj.getScore(text);
+        	teamBed.setScore(i);
+        }
+        if (nbBedNotDestroyed == 1)
+        	end(main, team.getName());
+        for (int i = 0; i < teamArraySize; i++)
+		{
+			ArrayList<Player> players = teams.get(i).getPlayers();
+			int playerArraySize = players.size();
+			for (int j = 0; j < playerArraySize; j++)
+				players.get(j).setScoreboard(board);
+		}
+	}
+	
+	/*
+	 * end the game, teleport everyone to the lobby and delete the game
+	 */
+	public void end(Main main, String teamname)
+	{
+		int playerArraySize = players.size();
+		for (int i = 0; i < playerArraySize; i++)
+		{
+			Player player = players.get(i);
+			player.sendTitle(ChatColor.GREEN + "team " + teamname + " won", "return to lobby in 5 sec ...", 10, 70, 20);
+			new BukkitRunnable(){
+	            public void run(){
+	                main.updateWorld(player, "lobby");
+	            }
+	        }.runTaskLater(main, 20L * 5); //1L = 1 tick, 20L = 1 sec
+		}
+		Game game = this;
+		new BukkitRunnable(){
+            public void run(){
+                main.deleteGame(game);
+            }
+        }.runTaskLater(main, 20L * 5); //1L = 1 tick, 20L = 1 sec
+	}
+	
+	/*
+	 * all getters and setters
+	 */
 	public ArrayList<Team> getTeams() {
 		return teams;
 	}
+	
 	public void setTeams(ArrayList<Team> teams) {
 		this.teams = teams;
 	}
+	
 	public Team getTeam(String materialName)
 	{
 		int teamArraySize = teams.size();
@@ -177,70 +276,6 @@ public class Game {
 		for (int i = 0; i < teamArraySize; i++)
 		{
 			teams.get(i).removePlayer(player);
-		}
-	}
-	
-	public void start(Main main)
-	{
-		Scoreboard board = main.getScoreboardManager().getNewScoreboard();
-		Objective obj = board.registerNewObjective("inGameScoreBoard", Criteria.DUMMY, "Bedwars");
-        obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-        int teamArraySize = teams.size();
-        for (int i = 0; i < teamArraySize; i++)
-        {
-        	String text = teams.get(i).getName() + ": ";
-        	if (teams.get(i).getSpawn() == null)
-        		text += "§4BED";
-        	else
-        		text += "§2BED";
-        	Score teamBed = obj.getScore(text);
-        	teamBed.setScore(i);
-        }
-		for (int i = 0; i < teamArraySize; i++)
-		{
-			ArrayList<Player> players = teams.get(i).getPlayers();
-			int playerArraySize = players.size();
-			for (int j = 0; j < playerArraySize; j++)
-			{
-				Player player = players.get(j);
-				player.getInventory().clear();
-				player.teleport(teams.get(i).getSpawn());
-				player.setInvulnerable(false);
-				player.setScoreboard(board);
-			}
-		}
-	}
-	
-	public void end(Main main)
-	{
-		int playerArraySize = players.size();
-		for (int i = 0; i < playerArraySize; i++)
-			main.updateWorld(players.get(i), "lobby");
-	}
-	
-	public void updateScoreboard(Main main)
-	{
-		Scoreboard board = main.getScoreboardManager().getNewScoreboard();
-		Objective obj = board.registerNewObjective("inGameScoreBoard", Criteria.DUMMY, "Bedwars");
-		obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-		int teamArraySize = teams.size();
-        for (int i = 0; i < teamArraySize; i++)
-        {
-        	String text = teams.get(i).getName() + ": ";
-        	System.out.println(teams.get(i).getSpawn());
-        	if (teams.get(i).getSpawn() == null)
-        		text += "§4BED";
-        	else
-        		text += "§2BED";
-        	Score teamBed = obj.getScore(text);
-        	teamBed.setScore(i);
-        }
-        for (int i = 0; i < teamArraySize; i++)
-		{
-			ArrayList<Player> players = teams.get(i).getPlayers();
-			int playerArraySize = players.size();
-			for (int j = 0; j < playerArraySize; j++)
-				players.get(j).setScoreboard(board);
 		}
 	}
 }

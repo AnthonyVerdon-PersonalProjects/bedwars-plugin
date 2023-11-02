@@ -37,11 +37,10 @@ public class MyListener implements Listener {
 		gameLobby = new GameLobby();
 		inGameLogic = new InGameLogic();
 	}
-	
+
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		System.out.println(player + " connected");
 		main.updateWorld(player, "lobby");
 		player.getInventory().clear();
 		player.getInventory().setItem(4, main.createCustomItem(Material.BOOK, "Menu"));
@@ -105,13 +104,5 @@ public class MyListener implements Listener {
 	@EventHandler
 	public void onBlockDestroyed(BlockBreakEvent event) {
 		inGameLogic.onBlockDestroyed(main, event);
-	}
-	
-	@EventHandler
-	public void onItemMove(InventoryClickEvent event)
-	{
-		Player player = (Player)event.getWhoClicked();
-		if (player.getWorld().getName().compareTo("lobby") == 0)
-			event.setCancelled(true);
 	}
 }

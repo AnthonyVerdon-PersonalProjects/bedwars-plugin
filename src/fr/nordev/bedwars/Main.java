@@ -57,6 +57,10 @@ public class Main extends JavaPlugin {
 		System.out.println("plugin stopped");
 	}
 	
+	/*
+	 * generate a world with specifics arguments
+	 * gameBlueprint world is an equivalent of a map builders could create
+	 */
 	private void createWorld(String worldname, Environment env, WorldType type)
 	{
 		WorldCreator wc = new WorldCreator(worldname);
@@ -76,6 +80,9 @@ public class Main extends JavaPlugin {
 		}
 	}
 	
+	/*
+	 * reset player state in game
+	 */
 	public void respawnPlayer(Player player)
 	{
 		player.setGameMode(GameMode.SURVIVAL);
@@ -85,18 +92,59 @@ public class Main extends JavaPlugin {
 		player.teleport(player.getWorld().getSpawnLocation());
 	}
 	
+	/*
+	 * teleport the player to a specific world
+	 */
 	public void updateWorld(Player player, String worldname)
 	{
 		player.teleport(getServer().getWorld(worldname).getSpawnLocation());
 	}
 	
-	public World getGameBlueprint() {
-		return (getServer().getWorld("gameBlueprint"));
-	}
-	
+	/*
+	 * store a game instance into the games dataset
+	 */
 	public void addGame(Game game)
 	{
 		games.add(game);
+	}
+	
+	/*
+	 * erase a game instance from the games dataset
+	 */
+	public void deleteGame(Game game)
+	{
+		games.remove(game);
+	}
+	
+	/*
+	 * create a new item based on it name and it material
+	 */
+	public ItemStack createCustomItem(Material materialname, String name)
+	{
+		ItemStack customItem = new ItemStack(materialname, 1);
+    	ItemMeta customMeta = customItem.getItemMeta();
+    	customMeta.setDisplayName(name);
+    	customItem.setItemMeta(customMeta);
+    	return (customItem);
+	}
+	
+	/*
+	 * method to compare coordinate to a location, for bed destruction detection
+	 */
+	public boolean samePosition(Location location, double[] coords)
+	{
+		if (location.getX() == coords[0]
+			&& location.getY() == coords[1]
+			&& location.getZ() == coords[2])
+			return (true);
+		return (false);
+	}
+	
+	/*
+	 * getter for different attributes
+	 */
+	public World getGameBlueprint() {
+		return (getServer().getWorld("gameBlueprint"));
 	}
 	
 	public Game getGame(Player player)
@@ -120,29 +168,7 @@ public class Main extends JavaPlugin {
 		return (games);
 	}
 	
-	public ItemStack createCustomItem(Material materialname, String name)
-	{
-		ItemStack customItem = new ItemStack(materialname, 1);
-    	ItemMeta customMeta = customItem.getItemMeta();
-    	customMeta.setDisplayName(name);
-    	customItem.setItemMeta(customMeta);
-    	return (customItem);
-	}
-
 	public ScoreboardManager getScoreboardManager() {
 		return manager;
-	}
-
-	public void setScoreboardManager(ScoreboardManager manager) {
-		this.manager = manager;
-	}
-	
-	public boolean samePosition(Location location, double[] coords)
-	{
-		if (location.getX() == coords[0]
-			&& location.getY() == coords[1]
-			&& location.getZ() == coords[2])
-			return (true);
-		return (false);
 	}
 }

@@ -21,6 +21,11 @@ import fr.nordev.bedwars.classes.Game;
 
 public class ServerLobby {
 
+	/*
+	 * when a player connect
+	 * give him a book to choose a team
+	 * set the scoreboard
+	 */
 	public void playerConnected(Main main, Player player)
 	{
 		player.getInventory().setItem(4, main.createCustomItem(Material.BOOK, "Menu"));
@@ -33,6 +38,32 @@ public class ServerLobby {
         player.setScoreboard(board);
 	}
 	
+	/*
+	 * create inventory of menu book
+	 */
+	public void openMenuBook(Main main, PlayerInteractEvent event)
+	{
+        Player player = event.getPlayer();
+        Inventory inventoryMenu = Bukkit.createInventory(null, 27, "Menu");
+        inventoryMenu.setItem(0, main.createCustomItem(Material.COMPASS, "start game"));
+        ArrayList<Game> games = main.getGames();
+        int gameArraySize = 0;
+        if (games != null)
+        	gameArraySize = games.size();
+        for (int i = 0; i < gameArraySize; i++)
+        {
+        	if (i > 25)
+        		break ;
+        	inventoryMenu.setItem(i + 1, main.createCustomItem(Material.GREEN_WOOL, games.get(i).getName()));
+        }
+        player.openInventory(inventoryMenu);
+	}
+	
+	/*
+	 * when player choose to create a game
+	 * add the new game to games dataset
+	 * teleport player to the world
+	 */
 	public void startGame(Main main, InventoryClickEvent event, ItemStack item)
 	{
 		if (item.getType() != Material.COMPASS || !item.hasItemMeta())
@@ -47,6 +78,10 @@ public class ServerLobby {
         main.updateWorld(player, newGame.getName());
 	}
 	
+	/*
+	 * when a player choose to join a game
+	 * teleport him to the world
+	 */
 	public void chooseGame(Main main, InventoryClickEvent event, ItemStack item)
 	{
 		if (item.getType() != Material.GREEN_WOOL || !item.hasItemMeta())
@@ -68,23 +103,5 @@ public class ServerLobby {
         	}
         }
 		return ;
-	}
-	
-	public void openMenuBook(Main main, PlayerInteractEvent event)
-	{
-        Player player = event.getPlayer();
-        Inventory inventoryMenu = Bukkit.createInventory(null, 27, "Menu");
-        inventoryMenu.setItem(0, main.createCustomItem(Material.COMPASS, "start game"));
-        ArrayList<Game> games = main.getGames();
-        int gameArraySize = 0;
-        if (games != null)
-        	gameArraySize = games.size();
-        for (int i = 0; i < gameArraySize; i++)
-        {
-        	if (i > 25)
-        		break ;
-        	inventoryMenu.setItem(i + 1, main.createCustomItem(Material.GREEN_WOOL, games.get(i).getName()));
-        }
-        player.openInventory(inventoryMenu);
 	}
 }

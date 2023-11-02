@@ -22,6 +22,11 @@ import fr.nordev.bedwars.classes.Team;
 
 public class GameLobby {
 	
+	/*
+	 * when a player connect
+	 * give him a book to choose a team
+	 * set the scoreboard
+	 */
 	public void playerConnected(Main main, Player player)
 	{
 		player.getInventory().setItem(4, main.createCustomItem(Material.BOOK, "choose a team"));
@@ -34,12 +39,42 @@ public class GameLobby {
         player.setScoreboard(board);
 	}
 	
+	/*
+	 * when a player right click on "choose a team" book
+	 * open it
+	 */
 	public void openChooseTeamBook(Main main, PlayerInteractEvent event)
 	{
         Player player = event.getPlayer();
         updateTeamBook(main, player);
 	}
 	
+	/*
+	 * when a player click on a team on the "choose a team" book
+	 * reset player team
+	 * assign it to a new team
+	 * update book
+	 */
+	public void chooseTeam(Main main, InventoryClickEvent event, ItemStack item)
+	{
+		if (!item.getType().name().endsWith("_DYE") || !item.hasItemMeta())
+        	return ;
+        ItemMeta meta = item.getItemMeta();
+        if (!meta.hasDisplayName() || !meta.getDisplayName().startsWith("TEAM "))
+        	return ;
+        Player player = (Player)event.getWhoClicked();
+        Game game = main.getGame(player);
+        if (game != null)
+        {
+        	game.resetPlayerTeam(player);
+        	game.addPlayerToTeam(player, meta.getDisplayName());
+        	updateTeamBook(main, player);
+        }
+	}
+	
+	/*
+	 * recreate inventory in book
+	 */
 	private void updateTeamBook(Main main, Player player)
 	{
 		Game game = main.getGame(player);
@@ -57,6 +92,11 @@ public class GameLobby {
         player.openInventory(inventoryMenu);
 	}
 	
+	/*
+	 * create a dye material
+	 * with a specific name
+	 * and all players in the team
+	 */
 	private ItemStack createTeamDye(Main main, Game game, Material material)
 	{
 		ItemStack teamItem = main.createCustomItem(material, "TEAM " + material.name().split("_")[0]);
@@ -72,22 +112,4 @@ public class GameLobby {
     	return (teamItem);
 	}
 
-	public void chooseTeam(Main main, InventoryClickEvent event, ItemStack item)
-	{
-		if (!item.getType().name().endsWith("_DYE") || !item.hasItemMeta())
-        	return ;
-        ItemMeta meta = item.getItemMeta();
-        if (!meta.hasDisplayName() || !meta.getDisplayName().startsWith("TEAM "))
-        	return ;
-        Player player = (Player)event.getWhoClicked();
-        Game game = main.getGame(player);
-        if (game != null)
-        {
-        	game.resetPlayerTeam(player);
-        	game.addPlayerToTeam(player, meta.getDisplayName());
-        	updateTeamBook(main, player);
-        }
-        //add player to the correct team (if player already in a team, erase it)
-        //add a button to quit your team
-	}
 }
